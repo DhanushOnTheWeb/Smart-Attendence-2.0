@@ -18,18 +18,24 @@ SmartAttend 2.0 is a comprehensive, full-stack MERN application designed to digi
 3. Database: MongoDB (Local/Atlas).
 4. Libraries: Mongoose (ODM), Multer (File Upload), Bcrypt.js (Security), CSV-Parser.
 
-```Bash
+
 1. Clone the Repository
-git clone https://github.com/your-username/smart-attendance-2.0.git
+```Bash
+[git clone https://github.com/your-username/smart-attendance-2.0.git](https://github.com/DhanushOnTheWeb/Smart-Attendence-2.0.git)
+```
+```Bash
 cd smart-attendance-2.0
+```
 2. Install Dependencies
-Bash
+```Bash
 npm install
+```
 3. Database Indexing (Critical Step)
 To ensure the system supports multiple subjects per day, the database requires a specific index. Ensure your local MongoDB attendances collection does not have a unique index on just date. The server will automatically create the correct index:
 { studentId: 1, subjectName: 1, date: 1 }.
 
-4. Run the Application
-Bash
+5. Run the Application
+```Bash
 node server.js
+```
 The server will start on http://localhost:5000.
