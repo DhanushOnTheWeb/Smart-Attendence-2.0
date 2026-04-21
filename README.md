@@ -27,9 +27,7 @@ SmartAttend 2.0 is a comprehensive, full-stack MERN application designed to digi
 
 1. Clone the Repository
 ```Bash
-[git clone https://github.com/your-username/smart-attendance-2.0.git](https://github.com/DhanushOnTheWeb/Smart-Attendence-2.0.git)
-```
-```Bash
+git clone https://github.com/your-username/smart-attendance-2.0.git](https://github.com/DhanushOnTheWeb/Smart-Attendence-2.0.git)
 cd smart-attendance-2.0
 ```
 2. Install Dependencies
@@ -49,9 +47,13 @@ The server will start on http://localhost:5000.
 # 📄 API Documentation
 
 POST /login: Authenticates teachers and students.
+
 POST /register: Registers new teacher accounts.
+
 POST /attendance: Marks or updates attendance records using an upsert logic.
+
 GET /attendance/:uId: Retrieves a student's full profile and multi-subject attendance history.
+
 POST /import-students: Handles bulk CSV uploads of student data.
 
 # 👨‍💻 Author
