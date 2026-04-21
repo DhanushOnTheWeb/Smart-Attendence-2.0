@@ -18,8 +18,8 @@ SmartAttend 2.0 is a comprehensive, full-stack MERN application designed to digi
 3. Database: MongoDB (Local/Atlas).
 4. Libraries: Mongoose (ODM), Multer (File Upload), Bcrypt.js (Security), CSV-Parser.
 
+```Bash
 1. Clone the Repository
-Bash
 git clone https://github.com/your-username/smart-attendance-2.0.git
 cd smart-attendance-2.0
 2. Install Dependencies
