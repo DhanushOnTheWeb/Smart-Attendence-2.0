@@ -36,7 +36,7 @@
    ```bash
    git clone [https://github.com/DhanushOnTheWeb/Smart-Attendence-2.0.git](https://github.com/DhanushOnTheWeb/Smart-Attendence-2.0.git)
    cd Smart-Attendence-2.0
-   
+   ```
 2. Install Dependencies
 ```Bash
 npm install
