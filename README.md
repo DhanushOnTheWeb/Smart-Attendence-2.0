@@ -4,19 +4,19 @@ SmartAttend 2.0 is a comprehensive, full-stack MERN application designed to digi
 
 # 🚀 Key Features
 
-Subject-Wise Tracking: Supports multiple attendance records per student per day by utilizing a triple-key unique indexing strategy (Student + Subject + Date).
-Real-Time Analytics: Integrated Chart.js dashboard for students to visualize their attendance trends and individual subject percentages.
-Bulk Student Management: Teachers can import thousands of student records instantly via CSV file processing.
-Horizontal Subject Management: A streamlined interface for teachers to create or remove subjects across various degrees (BCA, BBA, BCOM) and semesters.
-Glassmorphism UI/UX: A vibrant, modern design featuring frosted-glass elements, interactive animations, and responsive layouts.
-Secure Authentication: Secure login system with Bcrypt.js password hashing and role-based access control.
+1. Subject-Wise Tracking: Supports multiple attendance records per student per day by utilizing a triple-key unique indexing strategy (Student + Subject + Date).
+2. Real-Time Analytics: Integrated Chart.js dashboard for students to visualize their attendance trends and individual subject percentages.
+3. Bulk Student Management: Teachers can import thousands of student records instantly via CSV file processing.
+4. Horizontal Subject Management: A streamlined interface for teachers to create or remove subjects across various degrees (BCA, BBA, BCOM) and semesters.
+5. Glassmorphism UI/UX: A vibrant, modern design featuring frosted-glass elements, interactive animations, and responsive layouts.
+6. Secure Authentication: Secure login system with Bcrypt.js password hashing and role-based access control.
 
 # 🛠️ Tech Stack
 
-Frontend: HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Chart.js.
-Backend: Node.js, Express.js.
-Database: MongoDB (Local/Atlas).
-Libraries: Mongoose (ODM), Multer (File Upload), Bcrypt.js (Security), CSV-Parser.
+1. Frontend: HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Chart.js.
+2. Backend: Node.js, Express.js.
+3. Database: MongoDB (Local/Atlas).
+4. Libraries: Mongoose (ODM), Multer (File Upload), Bcrypt.js (Security), CSV-Parser.
 
 1. Clone the Repository
 Bash
