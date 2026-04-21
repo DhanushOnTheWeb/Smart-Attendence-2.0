@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Import Students | Smart Attendance</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+        }
+        .card { 
+            background: white; 
+            padding: 35px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 400px; 
+            text-align: center;
+        }
+        h2 { color: #1a73e8; margin-bottom: 10px; }
+        .instruction {
+            font-size: 13px; 
+            text-align: left; 
+            background: #e8f0fe; 
+            padding: 15px; 
+            border-radius: 8px;
+            color: #3c4043;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #34a853; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover { background: #2d8e47; }
+        .back-link { 
+            display: block;
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Bulk Student Import</h2>
+        <div class="instruction">
+            <strong>CSV Column Order:</strong><br>
+            name, uniqueId, degree, semester, section
+        </div>
+        
+        <input type="file" id="csvFile" accept=".csv">
+        <button id="uploadBtn">Upload Student Data</button>
+        
+        <a href="teachers.html" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        document.getElementById('uploadBtn').onclick = async () => {
+            const fileInput = document.getElementById('csvFile');
+            
+            // 1. Validation
+            if (!fileInput.files[0]) {
+                return alert("⚠️ Please select a CSV file first.");
+            }
+
+            // 2. Authentication (Manual prompt for security)
+            const uid = prompt("Enter Teacher Unique ID to authorize:");
+            const psw = prompt("Enter Password:");
+
+            if (!uid || !psw) return alert("Auth credentials required.");
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                // 3. API Call
+                const res = await fetch('http://localhost:5000/import-students', {
+                    method: 'POST',
+                    headers: { 
+                        'uniqueid': uid, // Must be lowercase to match server logic
+                        'password': psw 
+                    },
+                    body: formData
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    alert("✅ Success: " + result.message);
+                    fileInput.value = ""; // Clear file input
+                } else {
+                    alert("❌ Error: " + (result.error || "Import failed"));
+                }
+            } catch (err) { 
+                console.error(err);
+                alert("⚠️ Connection failed. Is the server running?"); 
+            }
+        };
+    </script>
+</body>
+</html>

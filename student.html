@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | Smart Attendance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --primary: #4f46e5;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--primary-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .wrapper { width: 100%; max-width: 600px; z-index: 1; }
+
+        .card { 
+            background: var(--glass-bg); 
+            padding: 30px; 
+            border-radius: 24px; 
+            margin-bottom: 24px; 
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        h2, h3 { font-weight: 700; color: var(--text-main); margin-top: 0; text-align: center; }
+
+        input, button { 
+            padding: 14px; 
+            margin: 10px 0; 
+            width: 100%; 
+            border-radius: 12px; 
+            border: 1px solid rgba(0, 0, 0, 0.1); 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            transition: 0.3s;
+        }
+
+        button { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 700; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        .profile-header { 
+            display: none; 
+            text-align: center; 
+            margin-bottom: 25px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
+        }
+
+        .subject-card { 
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .subject-percent { font-weight: 800; color: var(--primary); font-size: 1.4rem; }
+        #subjectList { display: none; }
+
+        .circles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; margin:0; padding:0; }
+        .circles li { position: absolute; display: block; list-style: none; width: 20px; height: 20px; background: rgba(255, 255, 255, 0.2); animation: animate 25s linear infinite; bottom: -150px; border-radius: 50%; }
+        @keyframes animate { 0%{ transform: translateY(0) rotate(0deg); opacity: 1; } 100%{ transform: translateY(-1000px) rotate(720deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <ul class="circles"><li></li><li></li><li></li><li></li><li></li></ul>
+
+    <div class="wrapper">
+        <div class="card">
+            <h2>Student Portal</h2>
+            <p style="text-align:center; color: var(--text-muted); margin-bottom: 20px;">Enter ID for subject-wise reports.</p>
+            <input id="uId" placeholder="Enter Unique ID (e.g., BCA2026004)">
+            <button onclick="getStats()">Check My Attendance</button>
+
+            <div id="studentDetails" class="profile-header">
+                <h3 id="studentName">Student Name</h3>
+                <p id="studentInfo">Degree | Sem | Sec</p>
+            </div>
+            <canvas id="chart" style="margin-top: 20px;"></canvas>
+        </div>
+
+        <div id="subjectList" class="card">
+            <h3>Subject-wise Breakdown</h3>
+            <div id="subjectsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+        async function getStats() {
+            const id = document.getElementById('uId').value;
+            if(!id) return alert("Please enter your ID");
+
+            try {
+                const res = await fetch(`http://localhost:5000/attendance/${id}`);
+                const data = await res.json();
+                if(!res.ok) return alert(data.error || "ID not found");
+                
+                // 1. Profile Header
+                document.getElementById('studentDetails').style.display = 'block';
+                document.getElementById('studentName').innerText = data.name;
+                document.getElementById('studentInfo').innerText = `${data.degree} | Sem: ${data.semester} | Sec: ${data.section}`;
+
+                // 2. Clear Container and Group Subjects
+                const subjects = {};
+                const container = document.getElementById('subjectsContainer');
+                container.innerHTML = ''; 
+                document.getElementById('subjectList').style.display = 'block';
+
+                data.records.forEach(r => {
+                    if(!subjects[r.subjectName]) subjects[r.subjectName] = { t:0, p:0 };
+                    subjects[r.subjectName].t++;
+                    if(r.status === 'present') subjects[r.subjectName].p++;
+                });
+
+                // Render EVERY subject card
+                Object.keys(subjects).forEach(sub => {
+                    const s = subjects[sub];
+                    const pct = Math.round((s.p/s.t)*100);
+                    container.innerHTML += `
+                        <div class="subject-card">
+                            <div>
+                                <b style="font-size: 1.1rem; color: var(--text-main);">${sub}</b><br>
+                                <small style="color: var(--text-muted); font-weight: 600;">Classes: ${s.t} | Present: ${s.p}</small>
+                            </div>
+                            <div class="subject-percent">${pct}%</div>
+                        </div>`;
+                });
+
+                // 3. Chart Update
+                if(chart) chart.destroy();
+                const sorted = data.records.sort((a,b) => new Date(a.date) - new Date(b.date));
+                chart = new Chart(document.getElementById('chart'), {
+                    type: 'line',
+                    data: {
+                        labels: sorted.map(r => r.date),
+                        datasets: [{ 
+                            label: 'Attendance Status (1=P, 0=A)', 
+                            data: sorted.map(r => r.status==='present'?1:0), 
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: { 
+                        scales: { y: { min: 0, max: 1, ticks: { stepSize: 1, callback: (v) => v === 1 ? 'P' : 'A' } } } 
+                    }
+                });
+            } catch (err) {
+                alert("Ensure server.js is running.");
+            }
+        }
+    </script>
+</body>
+</html>

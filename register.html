@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration | Smart Attendance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --primary-btn: #4f46e5;
+            --text-main: #1e293b;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: var(--primary-gradient); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Decorative Background Elements */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .card { 
+            background: var(--glass-bg); 
+            padding: 40px; 
+            border-radius: 25px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            width: 100%; 
+            max-width: 400px; 
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        h2 { color: var(--text-main); font-weight: 700; margin-bottom: 25px; }
+
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0; 
+            border: 1px solid rgba(0,0,0,0.1); 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-btn);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--primary-btn); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 16px; 
+            margin-top: 15px; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        button:hover { 
+            background: #4338ca; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .links { 
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #64748b;
+        }
+
+        .links a { 
+            color: var(--primary-btn); 
+            text-decoration: none; 
+            font-weight: 600; 
+        }
+
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="bg-circle" style="width: 300px; height: 300px; top: -100px; left: -100px;"></div>
+    <div class="bg-circle" style="width: 250px; height: 250px; bottom: -50px; right: -50px; animation-delay: 2s;"></div>
+
+    <div class="card">
+        <h2>Teacher Registration</h2>
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="text" id="uid" placeholder="Teacher Unique ID">
+        <input type="password" id="psw" placeholder="Password">
+        <button onclick="handleRegister()">Register Account</button>
+        <div class="links">
+            Already have an account? <a href="teachers.html">Back to Login</a>
+        </div>
+    </div>
+
+    <script>
+        async function handleRegister() {
+            const name = document.getElementById('name').value;
+            const uniqueId = document.getElementById('uid').value;
+            const password = document.getElementById('psw').value;
+
+            if (!name || !uniqueId || !password) {
+                return alert("Please fill all fields");
+            }
+
+            try {
+                // Connecting to your established server.js endpoint
+                const res = await fetch('http://localhost:5000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, uniqueId, password, role: 'teacher' })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert("✅ " + data.message);
+                    window.location.href = 'teachers.html'; 
+                } else {
+                    alert("❌ " + data.error);
+                }
+            } catch (err) {
+                alert("⚠️ Server connection error. Please ensure server.js is running.");
+            }
+        }
+    </script>
+</body>
+</html>
